@@ -1,0 +1,7 @@
+"Phrases"
+{
+    "You was moved to spectator team"
+    {
+        "en"    "You was moved to spectator team due class limit"
+    }
+}
