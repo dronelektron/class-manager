@@ -24,41 +24,46 @@ void FindClassLimitConVars() {
         g_limitAlliesConVars[i] = FindConVar(g_limitAlliesConVarNames[i]);
         g_limitAxisConVars[i] = FindConVar(g_limitAxisConVarNames[i]);
 
-        g_limitAlliesConVars[i].AddChangeHook(OnAlliesConVarChanged);
-        g_limitAxisConVars[i].AddChangeHook(OnAxisConVarChanged);
+        g_limitAlliesConVars[i].AddChangeHook(ConVarChanged_ClassLimit);
+        g_limitAxisConVars[i].AddChangeHook(ConVarChanged_ClassLimit);
     }
 }
 
-void OnAlliesConVarChanged(ConVar conVar, char[] oldValue, char[] newValue) {
-    int class = GetConVarClass(conVar);
+void ConVarChanged_ClassLimit(ConVar conVar, char[] oldValue, char[] newValue) {
+    int team;
+    int class;
+    int limit = StringToInt(newValue);
 
-    if (class != Class_Unknown) {
-        int limit = StringToInt(newValue);
-
-        MovePlayersToSpectator(Team_Allies, class, limit);
-    }
+    GetConVarTeamAndClass(conVar, team, class);
+    MovePlayersToSpectator(team, class, limit);
+    NotifyAboutClassLimitChange(team, class, limit);
 }
 
-void OnAxisConVarChanged(ConVar conVar, char[] oldValue, char[] newValue) {
-    int class = GetConVarClass(conVar);
-
-    if (class != Class_Unknown) {
-        int limit = StringToInt(newValue);
-
-        MovePlayersToSpectator(Team_Axis, class, limit);
-    }
-}
-
-int GetConVarClass(ConVar conVar) {
-    int class = Class_Unknown;
+void GetConVarTeamAndClass(ConVar conVar, int& team, int& class) {
+    team = Team_Unassigned;
+    class = Class_Unknown;
 
     for (int i = Class_Rifleman; i <= Class_Rocket; i++) {
         if (conVar == g_limitAlliesConVars[i]) {
+            team = Team_Allies;
+            class = i;
+
+            break;
+        }
+
+        if (conVar == g_limitAxisConVars[i]) {
+            team = Team_Axis;
             class = i;
 
             break;
         }
     }
+}
 
-    return class;
+void SetConVarValue(int team, int class, char[] value) {
+    if (team == Team_Allies) {
+        g_limitAlliesConVars[class].SetString(value);
+    } else if (team == Team_Axis) {
+        g_limitAxisConVars[class].SetString(value);
+    }
 }
