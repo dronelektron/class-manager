@@ -1,5 +1,11 @@
 "Phrases"
 {
+    "Class limit was changed"
+    {
+        "#format"   "{1:t},{2:t},{3:d}"
+        "en"    "The limit of the {1} class in the {2} team has been changed to {3}"
+    }
+
     "You was moved to spectator team"
     {
         "en"    "You was moved to spectator team due class limit"
@@ -8,16 +14,6 @@
     "Class manager"
     {
         "en"    "Class manager"
-    }
-
-    "Allies"
-    {
-        "en"    "Allies"
-    }
-
-    "Axis"
-    {
-        "en"    "Axis"
     }
 
     "Rifleman"
@@ -50,6 +46,11 @@
         "en"    "Rocket"
     }
 
+    "Select action"
+    {
+        "en"    "Select an action"
+    }
+
     "Enable class"
     {
         "en"    "Enable class"
@@ -62,13 +63,26 @@
 
     "Set class limit"
     {
-        "#format"   "{1:d}"
-        "en"    "Set limit {1}"
+        "en"    "Set limit"
     }
 
-    "Class limit was changed"
+    "Select team"
     {
-        "#format"   "{1:t},{2:t},{3:d}"
-        "en"    "The limit of the {1} class in the {2} team has been changed to {3}"
+        "en"    "Select the team"
+    }
+
+    "Allies"
+    {
+        "en"    "Allies"
+    }
+
+    "Axis"
+    {
+        "en"    "Axis"
+    }
+
+    "Both teams"
+    {
+        "en"    "Both teams"
     }
 }

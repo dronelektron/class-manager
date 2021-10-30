@@ -60,10 +60,10 @@ void GetConVarTeamAndClass(ConVar conVar, int& team, int& class) {
     }
 }
 
-void SetConVarValue(int team, int class, char[] value) {
+void SetConVarValue(int team, int class, int limit) {
     if (team == Team_Allies) {
-        g_limitAlliesConVars[class].SetString(value);
+        g_limitAlliesConVars[class].SetInt(limit);
     } else if (team == Team_Axis) {
-        g_limitAxisConVars[class].SetString(value);
+        g_limitAxisConVars[class].SetInt(limit);
     }
 }
