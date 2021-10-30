@@ -5,6 +5,9 @@ static TopMenuObject g_menuItemAxisTeam = INVALID_TOPMENUOBJECT;
 static int g_selectedTeam[MAXPLAYERS + 1] = {Team_Unassigned, ...};
 static int g_selectedClass[MAXPLAYERS + 1] = {Class_Unknown, ...};
 
+static char teamNames[][] = {ALLIES, AXIS};
+static char classNames[][] = {RIFLEMAN, ASSAULT, SUPPORT, SNIPER, MG, ROCKET};
+
 void AddClassManagerToAdminMenu() {
     g_classManagerCategory = g_adminMenu.AddCategory(CLASS_MANAGER, TopMenuHandler_ClassManager);
 
@@ -42,6 +45,9 @@ public void TopMenuHandler_ClassManager(TopMenu topmenu, TopMenuAction action, T
 
 void CreateClassMenu(int client) {
     Menu menu = new Menu(MenuHandler_Class);
+    int selectedTeam = g_selectedTeam[client];
+
+    menu.SetTitle("%T", teamNames[selectedTeam - 2], client);
 
     AddTranslatedMenuItem(menu, RIFLEMAN, RIFLEMAN, client);
     AddTranslatedMenuItem(menu, ASSAULT, ASSAULT, client);
@@ -84,6 +90,9 @@ int MenuHandler_Class(Menu menu, MenuAction action, int param1, int param2) {
 
 void CreateClassActionMenu(int client) {
     Menu menu = new Menu(MenuHandler_ClassAction);
+    int selectedClass = g_selectedClass[client];
+
+    menu.SetTitle("%T", classNames[selectedClass], client);
 
     AddTranslatedMenuItem(menu, "-1", ENABLE_CLASS, client);
     AddTranslatedMenuItem(menu, "0", DISABLE_CLASS, client);

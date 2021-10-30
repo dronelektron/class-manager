@@ -35,8 +35,8 @@ void ConVarChanged_ClassLimit(ConVar conVar, char[] oldValue, char[] newValue) {
     int limit = StringToInt(newValue);
 
     GetConVarTeamAndClass(conVar, team, class);
-    MovePlayersToSpectator(team, class, limit);
     NotifyAboutClassLimitChange(team, class, limit);
+    MovePlayersToSpectator(team, class, limit);
 }
 
 void GetConVarTeamAndClass(ConVar conVar, int& team, int& class) {
