@@ -1,0 +1,88 @@
+"Phrases"
+{
+    "Class limit was changed"
+    {
+        "#format"   "{1:t},{2:t},{3:d}"
+        "en"    "The limit of the {1} class in the {2} team has been changed to {3}"
+    }
+
+    "You was moved to spectator team"
+    {
+        "en"    "You was moved to spectator team due class limit"
+    }
+
+    "Class manager"
+    {
+        "en"    "Class manager"
+    }
+
+    "Rifleman"
+    {
+        "en"    "Rifleman"
+    }
+
+    "Assault"
+    {
+        "en"    "Assault"
+    }
+
+    "Support"
+    {
+        "en"    "Support"
+    }
+
+    "Sniper"
+    {
+        "en"    "Sniper"
+    }
+
+    "Mg"
+    {
+        "en"    "Machine gunner"
+    }
+
+    "Rocket"
+    {
+        "en"    "Rocket"
+    }
+
+    "Select action"
+    {
+        "en"    "Select an action"
+    }
+
+    "Enable class"
+    {
+        "en"    "Enable class"
+    }
+
+    "Disable class"
+    {
+        "en"    "Disable class"
+    }
+
+    "Set class limit"
+    {
+        "en"    "Set limit"
+    }
+
+    "Select team"
+    {
+        "en"    "Select the team"
+    }
+
+    "Allies"
+    {
+        "en"    "Allies"
+    }
+
+    "Axis"
+    {
+        "en"    "Axis"
+    }
+
+    "Both teams"
+    {
+        "en"    "Both teams"
+    }
+}
