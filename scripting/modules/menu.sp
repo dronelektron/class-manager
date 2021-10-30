@@ -141,11 +141,15 @@ int MenuHandler_TeamAction(Menu menu, MenuAction action, int param1, int param2)
 
         if (StrEqual(info, ALLIES)) {
             SetConVarValue(Team_Allies, class, limit);
+            NotifyAboutClassLimitChange(param1, Team_Allies, class, limit);
         } else if (StrEqual(info, AXIS)) {
             SetConVarValue(Team_Axis, class, limit);
+            NotifyAboutClassLimitChange(param1, Team_Axis, class, limit);
         } else if (StrEqual(info, BOTH_TEAMS)) {
             SetConVarValue(Team_Allies, class, limit);
+            NotifyAboutClassLimitChange(param1, Team_Allies, class, limit);
             SetConVarValue(Team_Axis, class, limit);
+            NotifyAboutClassLimitChange(param1, Team_Axis, class, limit);
         }
     } else {
         MenuHandler_Default(menu, action, param1, param2);
