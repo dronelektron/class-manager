@@ -22,7 +22,7 @@ public Plugin myinfo = {
     name = "Class manager",
     author = "Dron-elektron",
     description = "Allows you to perform various operations on player classes",
-    version = "0.1.1",
+    version = "1.0.0",
     url = "https://github.com/dronelektron/class-manager"
 };
 
