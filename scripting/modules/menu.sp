@@ -1,25 +1,52 @@
+static TopMenu g_adminMenu = null;
+
 static TopMenuObject g_classManagerCategory = INVALID_TOPMENUOBJECT;
 static TopMenuObject g_menuItemClasses[Class_Rocket + 1] = {INVALID_TOPMENUOBJECT, ...};
 
 static int g_selectedClass[MAXPLAYERS + 1] = {Class_Unknown, ...};
 static int g_selectedLimit[MAXPLAYERS + 1] = {-1, ...};
 
-static char teamNames[][] = {ALLIES, AXIS};
-static char classNames[][] = {RIFLEMAN, ASSAULT, SUPPORT, SNIPER, MG, ROCKET};
+void AdminMenu_Create() {
+    TopMenu topMenu = GetAdminTopMenu();
 
-void AddClassManagerToAdminMenu() {
-    g_classManagerCategory = g_adminMenu.AddCategory(CLASS_MANAGER, TopMenuHandler_ClassManager);
+    if (LibraryExists(ADMIN_MENU) && topMenu != null) {
+        OnAdminMenuReady(topMenu);
+    }
+}
+
+void AdminMenu_Destroy() {
+    g_adminMenu = null;
+}
+
+void AdminMenu_OnReady(Handle topMenuHandle) {
+    TopMenu topMenu = TopMenu.FromHandle(topMenuHandle);
+
+    if (topMenu == g_adminMenu) {
+        return;
+    }
+
+    g_adminMenu = topMenu;
+
+    AdminMenu_Fill();
+}
+
+void AdminMenu_Fill() {
+    g_classManagerCategory = g_adminMenu.AddCategory(CLASS_MANAGER, AdminMenuHandler_ClassManager);
 
     if (g_classManagerCategory == INVALID_TOPMENUOBJECT) {
         return;
     }
 
+    char className[CLASS_NAME_SIZE];
+
     for (int class = Class_Rifleman; class <= Class_Rocket; class++) {
-        g_menuItemClasses[class] = g_adminMenu.AddItem(classNames[class], TopMenuHandler_ClassManager, g_classManagerCategory);
+        Class_GetName(class, className);
+
+        g_menuItemClasses[class] = g_adminMenu.AddItem(className, AdminMenuHandler_ClassManager, g_classManagerCategory);
     }
 }
 
-public void TopMenuHandler_ClassManager(TopMenu topmenu, TopMenuAction action, TopMenuObject topobj_id, int param, char[] buffer, int maxlength) {
+public void AdminMenuHandler_ClassManager(TopMenu topmenu, TopMenuAction action, TopMenuObject topobj_id, int param, char[] buffer, int maxlength) {
     if (action == TopMenuAction_DisplayOption) {
         if (topobj_id == g_classManagerCategory) {
             Format(buffer, maxlength, "%T", CLASS_MANAGER, param);
@@ -27,9 +54,12 @@ public void TopMenuHandler_ClassManager(TopMenu topmenu, TopMenuAction action, T
             return;
         }
 
+        char className[CLASS_NAME_SIZE];
+
         for (int class = Class_Rifleman; class <= Class_Rocket; class++) {
             if (topobj_id == g_menuItemClasses[class]) {
-                Format(buffer, maxlength, "%T", classNames[class], param);
+                Class_GetName(class, className);
+                Format(buffer, maxlength, "%T", className, param);
 
                 break;
             }
@@ -42,7 +72,7 @@ public void TopMenuHandler_ClassManager(TopMenu topmenu, TopMenuAction action, T
         for (int class = Class_Rifleman; class <= Class_Rocket; class++) {
             if (topobj_id == g_menuItemClasses[class]) {
                 g_selectedClass[param] = class;
-                CreateClassActionMenu(param);
+                Menu_ClassAction(param);
 
                 break;
             }
@@ -50,14 +80,14 @@ public void TopMenuHandler_ClassManager(TopMenu topmenu, TopMenuAction action, T
     }
 }
 
-void CreateClassActionMenu(int client) {
+void Menu_ClassAction(int client) {
     Menu menu = new Menu(MenuHandler_ClassAction);
 
     menu.SetTitle("%T", SELECT_ACTION, client);
 
-    AddTranslatedMenuItem(menu, ENABLE_CLASS, ENABLE_CLASS, client);
-    AddTranslatedMenuItem(menu, DISABLE_CLASS, DISABLE_CLASS, client);
-    AddTranslatedMenuItem(menu, SET_CLASS_LIMIT, SET_CLASS_LIMIT, client);
+    Menu_AddItem(menu, ENABLE_CLASS, ENABLE_CLASS, client);
+    Menu_AddItem(menu, DISABLE_CLASS, DISABLE_CLASS, client);
+    Menu_AddItem(menu, SET_CLASS_LIMIT, SET_CLASS_LIMIT, client);
 
     menu.ExitBackButton = true;
     menu.Display(client, MENU_TIME_FOREVER);
@@ -72,13 +102,13 @@ int MenuHandler_ClassAction(Menu menu, MenuAction action, int param1, int param2
         if (StrEqual(info, ENABLE_CLASS)) {
             g_selectedLimit[param1] = -1;
 
-            CreateTeamMenu(param1);
+            Menu_TeamAction(param1);
         } else if (StrEqual(info, DISABLE_CLASS)) {
             g_selectedLimit[param1] = 0;
 
-            CreateTeamMenu(param1);
+            Menu_TeamAction(param1);
         } else if (StrEqual(info, SET_CLASS_LIMIT)) {
-            CreateClassLimitMenu(param1);
+            Menu_ClassLimit(param1);
         }
     } else {
         MenuHandler_Default(menu, action, param1, param2);
@@ -87,7 +117,7 @@ int MenuHandler_ClassAction(Menu menu, MenuAction action, int param1, int param2
     return 0;
 }
 
-void CreateClassLimitMenu(int client) {
+void Menu_ClassLimit(int client) {
     Menu menu = new Menu(MenuHandler_ClassLimit);
     char info[TEXT_BUFFER_MAX_SIZE];
 
@@ -110,7 +140,7 @@ int MenuHandler_ClassLimit(Menu menu, MenuAction action, int param1, int param2)
         menu.GetItem(param2, info, sizeof(info));
         g_selectedLimit[param1] = StringToInt(info);
 
-        CreateTeamMenu(param1);
+        Menu_TeamAction(param1);
     } else {
         MenuHandler_Default(menu, action, param1, param2);
     }
@@ -118,14 +148,14 @@ int MenuHandler_ClassLimit(Menu menu, MenuAction action, int param1, int param2)
     return 0;
 }
 
-void CreateTeamMenu(int client) {
+void Menu_TeamAction(int client) {
     Menu menu = new Menu(MenuHandler_TeamAction);
 
     menu.SetTitle("%T", "Select team", client);
 
-    AddTranslatedMenuItem(menu, ALLIES, ALLIES, client);
-    AddTranslatedMenuItem(menu, AXIS, AXIS, client);
-    AddTranslatedMenuItem(menu, BOTH_TEAMS, BOTH_TEAMS, client);
+    Menu_AddItem(menu, ALLIES, ALLIES, client);
+    Menu_AddItem(menu, AXIS, AXIS, client);
+    Menu_AddItem(menu, BOTH_TEAMS, BOTH_TEAMS, client);
 
     menu.ExitBackButton = true;
     menu.Display(client, MENU_TIME_FOREVER);
@@ -140,16 +170,12 @@ int MenuHandler_TeamAction(Menu menu, MenuAction action, int param1, int param2)
         menu.GetItem(param2, info, sizeof(info));
 
         if (StrEqual(info, ALLIES)) {
-            SetConVarValue(Team_Allies, class, limit);
-            NotifyAboutClassLimitChange(param1, Team_Allies, class, limit);
+            UseCase_ChangeClassLimit(param1, Team_Allies, class, limit);
         } else if (StrEqual(info, AXIS)) {
-            SetConVarValue(Team_Axis, class, limit);
-            NotifyAboutClassLimitChange(param1, Team_Axis, class, limit);
+            UseCase_ChangeClassLimit(param1, Team_Axis, class, limit);
         } else if (StrEqual(info, BOTH_TEAMS)) {
-            SetConVarValue(Team_Allies, class, limit);
-            NotifyAboutClassLimitChange(param1, Team_Allies, class, limit);
-            SetConVarValue(Team_Axis, class, limit);
-            NotifyAboutClassLimitChange(param1, Team_Axis, class, limit);
+            UseCase_ChangeClassLimit(param1, Team_Allies, class, limit);
+            UseCase_ChangeClassLimit(param1, Team_Axis, class, limit);
         }
     } else {
         MenuHandler_Default(menu, action, param1, param2);
@@ -168,7 +194,7 @@ void MenuHandler_Default(Menu menu, MenuAction action, int param1, int param2) {
     }
 }
 
-void AddTranslatedMenuItem(Menu menu, char[] info, any ...) {
+void Menu_AddItem(Menu menu, char[] info, any ...) {
     char item[TEXT_BUFFER_MAX_SIZE];
 
     VFormat(item, sizeof(item), "%T", 3);

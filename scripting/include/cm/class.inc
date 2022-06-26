@@ -3,6 +3,8 @@
 #endif
 #define _class_included
 
+#define CLASS_NAME_SIZE 32
+
 enum {
     Class_Unknown = -1,
     Class_Rifleman,
@@ -11,4 +13,4 @@ enum {
     Class_Sniper,
     Class_Mg,
     Class_Rocket
-}
+};

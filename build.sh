@@ -2,4 +2,5 @@
 
 PLUGIN_NAME="class-manager"
 
-spcomp scripting/$PLUGIN_NAME.sp scripting/modules/*.sp -i scripting/include -o plugins/$PLUGIN_NAME.smx
+cd scripting
+spcomp $PLUGIN_NAME.sp -i include -o ../plugins/$PLUGIN_NAME.smx
