@@ -19,26 +19,26 @@ static char g_limitAxisConVarNames[][] = {
 static ConVar g_limitAlliesConVars[Class_Rocket + 1] = {null, ...};
 static ConVar g_limitAxisConVars[Class_Rocket + 1] = {null, ...};
 
-void FindClassLimitConVars() {
+void Variable_FindClassLimits() {
     for (int i = Class_Rifleman; i <= Class_Rocket; i++) {
         g_limitAlliesConVars[i] = FindConVar(g_limitAlliesConVarNames[i]);
         g_limitAxisConVars[i] = FindConVar(g_limitAxisConVarNames[i]);
 
-        g_limitAlliesConVars[i].AddChangeHook(ConVarChanged_ClassLimit);
-        g_limitAxisConVars[i].AddChangeHook(ConVarChanged_ClassLimit);
+        g_limitAlliesConVars[i].AddChangeHook(Variable_ClassLimitChanged);
+        g_limitAxisConVars[i].AddChangeHook(Variable_ClassLimitChanged);
     }
 }
 
-void ConVarChanged_ClassLimit(ConVar conVar, char[] oldValue, char[] newValue) {
+void Variable_ClassLimitChanged(ConVar conVar, char[] oldValue, char[] newValue) {
     int team;
     int class;
     int limit = StringToInt(newValue);
 
-    GetConVarTeamAndClass(conVar, team, class);
-    MovePlayersToSpectator(team, class, limit);
+    Variable_GetTeamAndClass(conVar, team, class);
+    UseCase_MoveToSpectator(team, class, limit);
 }
 
-void GetConVarTeamAndClass(ConVar conVar, int& team, int& class) {
+void Variable_GetTeamAndClass(ConVar conVar, int& team, int& class) {
     team = Team_Unassigned;
     class = Class_Unknown;
 
@@ -59,7 +59,7 @@ void GetConVarTeamAndClass(ConVar conVar, int& team, int& class) {
     }
 }
 
-void SetConVarValue(int team, int class, int limit) {
+void Variable_SetClassLimit(int team, int class, int limit) {
     if (team == Team_Allies) {
         g_limitAlliesConVars[class].SetInt(limit);
     } else if (team == Team_Axis) {

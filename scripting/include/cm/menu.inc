@@ -20,3 +20,5 @@
 #define ALLIES "Allies"
 #define AXIS "Axis"
 #define BOTH_TEAMS "Both teams"
+
+#define ADMIN_MENU "adminmenu"

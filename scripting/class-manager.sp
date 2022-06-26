@@ -5,47 +5,39 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#include "class"
-#include "team"
-#include "message"
-#include "menu"
+#include "cm/class"
+#include "cm/menu"
+#include "cm/message"
+#include "cm/team"
+
+#include "modules/class.sp"
+#include "modules/console-variable.sp"
+#include "modules/menu.sp"
+#include "modules/message.sp"
+#include "modules/player.sp"
+#include "modules/team.sp"
+#include "modules/use-case.sp"
 
 public Plugin myinfo = {
     name = "Class manager",
     author = "Dron-elektron",
     description = "Allows you to perform various operations on player classes",
-    version = "0.1.1",
-    url = ""
-}
-
-char ADMIN_MENU[] = "adminmenu";
-TopMenu g_adminMenu = null;
+    version = "1.0.0",
+    url = "https://github.com/dronelektron/class-manager"
+};
 
 public void OnPluginStart() {
-    FindClassLimitConVars();
+    Variable_FindClassLimits();
+    AdminMenu_Create();
     LoadTranslations("class-manager.phrases");
-
-    TopMenu topMenu;
-
-    if (LibraryExists(ADMIN_MENU) && (topMenu = GetAdminTopMenu()) != null) {
-        OnAdminMenuReady(topMenu);
-    }
 }
 
 public void OnLibraryRemoved(const char[] name) {
-    if (StrEqual(name, ADMIN_MENU, false)) {
-        g_adminMenu = null;
+    if (strcmp(name, ADMIN_MENU) == 0) {
+        AdminMenu_Destroy();
     }
 }
 
-public void OnAdminMenuReady(Handle aTopMenu) {
-    TopMenu topMenu = TopMenu.FromHandle(aTopMenu);
-
-    if (topMenu == g_adminMenu) {
-        return;
-    }
-
-    g_adminMenu = topMenu;
-
-    AddClassManagerToAdminMenu();
+public void OnAdminMenuReady(Handle topMenu) {
+    AdminMenu_OnReady(topMenu);
 }
