@@ -4,6 +4,8 @@
 #define _class_included
 
 #define CLASS_NAME_SIZE 32
+#define CLASS_DISABLED 0
+#define CLASS_UNLIMITED -1
 
 enum {
     Class_Unknown = -1,

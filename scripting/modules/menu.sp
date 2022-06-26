@@ -100,11 +100,11 @@ int MenuHandler_ClassAction(Menu menu, MenuAction action, int param1, int param2
         menu.GetItem(param2, info, sizeof(info));
 
         if (StrEqual(info, ENABLE_CLASS)) {
-            g_selectedLimit[param1] = -1;
+            g_selectedLimit[param1] = CLASS_UNLIMITED;
 
             Menu_TeamAction(param1);
         } else if (StrEqual(info, DISABLE_CLASS)) {
-            g_selectedLimit[param1] = 0;
+            g_selectedLimit[param1] = CLASS_DISABLED;
 
             Menu_TeamAction(param1);
         } else if (StrEqual(info, SET_CLASS_LIMIT)) {
